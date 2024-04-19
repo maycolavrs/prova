@@ -1,4 +1,5 @@
 
+
 // Função para adicionar a planta ao diário
 function adicionarAoJardim(titulo, resumo, imagem) {
     // Criar um objeto para representar a planta
