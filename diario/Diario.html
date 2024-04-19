@@ -34,12 +34,24 @@
                 if (listaPlantas && listaPlantas.length > 0) {
                     listaPlantas.forEach(planta => {
                         const plantaDiv = document.createElement('div');
+                        plantaDiv.classList.add('planta');
+    
+                        const notaTextarea = document.createElement('textarea');
+                        notaTextarea.placeholder = 'Adicione uma nota...';
+                        notaTextarea.addEventListener('input', function() {
+                            // Salvar a nota no localStorage quando houver alterações
+                            planta.nota = this.value;
+                            salvarListaPlantas(listaPlantas);
+                        });
+                        notaTextarea.value = planta.nota || ''; // Preencher com a nota se existir
+    
                         plantaDiv.innerHTML = `
                             <h2>${planta.titulo}</h2>
                             <img src="${planta.imagem}" alt="${planta.titulo}">
                             <p>${planta.resumo}</p>
                             <button onclick="removerDoJardim('${planta.titulo}')">Remover</button>
                         `;
+                        plantaDiv.appendChild(notaTextarea);
                         listaPlantasDiv.appendChild(plantaDiv);
                     });
                 } else {
@@ -47,9 +59,15 @@
                 }
             }
     
+            // Função para salvar a lista de plantas no localStorage
+            function salvarListaPlantas(listaPlantas) {
+                localStorage.setItem('listaPlantas', JSON.stringify(listaPlantas));
+            }
+    
             // Chamada inicial para exibir as plantas no diário ao carregar a página
             exibirPlantasNoDiario();
         </script>
     </body>
     </html>
+    
     
