@@ -27,7 +27,6 @@ function adicionarAoJardim(titulo, resumo, imagem) {
     window.location.href = '../diario/Diario.html';
 }
 
-// Função para buscar informações sobre uma planta na Wikipedia
 function buscarInformacoesPlanta(planta) {
     const nomeFormatado = planta.replace(/\s/g, '_');
     const url = `https://pt.wikipedia.org/api/rest_v1/page/summary/${nomeFormatado}`;
@@ -40,6 +39,11 @@ function buscarInformacoesPlanta(planta) {
             return response.json();
         })
         .then(data => {
+            // Verificar se o resultado contém informações relevantes sobre plantas
+            if (!contemInformacoesSobrePlantas(data)) {
+                throw new Error('Nenhuma informação relevante encontrada sobre a planta');
+            }
+
             const titulo = data.title;
             const resumo = data.extract;
             const imagem = data.thumbnail ? data.thumbnail.source : '';
@@ -58,6 +62,16 @@ function buscarInformacoesPlanta(planta) {
             alert('Não foi possível obter informações sobre a planta. Por favor, tente novamente mais tarde.');
         });
 }
+
+function contemInformacoesSobrePlantas(data) {
+    // Verificar se o título ou o resumo contém palavras relacionadas a plantas
+    const palavrasChave = ['planta', 'flor', 'árvore', 'folha', 'botânica', 'hortaliça', 'fruta', 'legume', 'erva', 'arbusto', 'cacto', 'grama', 'samambaia', 'musgo', 'fungo', 'jardim', 'jardineiro', 'verde', 'pétala', 'caule', 'semente', 'brotamento', 'poda', 'adubo', 'vaso', 'irrigação', ];
+    const titulo = data.title.toLowerCase();
+    const resumo = data.extract.toLowerCase();
+
+    return palavrasChave.some(palavra => titulo.includes(palavra) || resumo.includes(palavra));
+}
+
 
 // Função para exibir o resultado da pesquisa na página
 function exibirResultado(titulo, resumo, imagem) {
